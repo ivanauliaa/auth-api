@@ -19,7 +19,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ~/auth-api
-          git pull origin master
+          git pull https://${{ secrets.GIT_TOKEN }}:x-oauth-basic@github.com/ivanauliaa/auth-api.git master
           npm install
           npm run migrate up
           pm2 restart auth-api
