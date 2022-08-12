@@ -40,13 +40,15 @@ describe('HTTP server', () => {
     it('should return 200 and hello world', async () => {
       const server = await createServer();
 
-      const response = server.inject({
+      const response = await server.inject({
         method: 'GET',
         url: '/',
       });
 
+      console.log(response.payload);
+
       const responseJson = JSON.parse(response.payload);
-      expect(responseJson.statusCode).toEqual(200);
+      expect(response.statusCode).toEqual(200);
       expect(responseJson.value).toEqual('Hello world!');
     });
   });
