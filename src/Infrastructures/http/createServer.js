@@ -25,13 +25,22 @@ const createServer = async (container) => {
     },
   ]);
 
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: () => ({
-      value: 'Hello world! 2',
-    }),
-  });
+  server.route([
+    {
+      method: 'GET',
+      path: '/',
+      handler: () => ({
+        value: 'Hello world! 2',
+      }),
+    },
+    {
+      method: 'GET',
+      path: '/ping',
+      handler: () => ({
+        value: 'pong',
+      }),
+    },
+  ]);
 
   server.ext('onPreResponse', (request, h) => {
     const { response } = request;
