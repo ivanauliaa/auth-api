@@ -52,4 +52,21 @@ describe('HTTP server', () => {
       expect(responseJson.value).toEqual('Hello world! 2');
     });
   });
+
+  describe('when GET /ping', () => {
+    it('should return 200 and pong', async () => {
+      const server = await createServer();
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/ping',
+      });
+
+      console.log(response.payload);
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.value).toEqual('pong');
+    });
+  });
 });
