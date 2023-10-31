@@ -67,6 +67,12 @@ const createServer = async (container) => {
       },
     };
 
+    if (response.isBoom) {
+      response.output.headers['X-Request-ID'] = logObject.requestId;
+    } else {
+      response.header('X-Request-ID', logObject.requestId);
+    }
+
     if (response instanceof Error) {
       const translatedError = DomainErrorTranslator.translate(response);
 
@@ -78,6 +84,7 @@ const createServer = async (container) => {
         newResponse.code(translatedError.statusCode);
 
         logger.error(logObject);
+        newResponse.header('X-Request-ID', logObject.requestId);
         return newResponse;
       }
 
@@ -103,6 +110,7 @@ const createServer = async (container) => {
       newResponse.code(500);
 
       logger.error(logObject);
+      newResponse.header('X-Request-ID', logObject.requestId);
       return newResponse;
     }
 
