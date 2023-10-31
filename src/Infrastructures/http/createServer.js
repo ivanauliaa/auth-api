@@ -7,6 +7,7 @@ const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 
 const pinoOption = {
+  enabled: !(process.env.NODE_ENV === 'test'),
   transport: {
     target: 'pino-pretty',
   },
@@ -69,16 +70,6 @@ const createServer = async (container) => {
     if (response instanceof Error) {
       const translatedError = DomainErrorTranslator.translate(response);
 
-      if (!translatedError.isServer) {
-        logObject.response = {
-          statusCode: response.output.statusCode,
-          body: response.output.payload,
-        };
-
-        logger.error(logObject);
-        return h.continue;
-      }
-
       if (translatedError instanceof ClientError) {
         const newResponse = h.response({
           status: 'fail',
@@ -88,6 +79,16 @@ const createServer = async (container) => {
 
         logger.error(logObject);
         return newResponse;
+      }
+
+      if (!translatedError.isServer) {
+        logObject.response = {
+          statusCode: response.output.statusCode,
+          body: response.output.payload,
+        };
+
+        logger.error(logObject);
+        return h.continue;
       }
 
       logObject.response = {
